@@ -232,7 +232,7 @@
 </style>
 
 <script is:inline>
-  (function () {
+  document.addEventListener('DOMContentLoaded', function () {
     // --- Extract headings from article ---
     const prose = document.querySelector('.prose');
     if (!prose) return;
@@ -407,5 +407,5 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closePanel();
     });
-  })();
+  });
 </script>

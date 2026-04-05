@@ -25,7 +25,7 @@
 </style>
 
 <script is:inline>
-  (function () {
+  document.addEventListener('DOMContentLoaded', function () {
     const fill = document.getElementById('reading-progress-fill');
     const article = document.querySelector('article');
     if (!fill || !article) return;
@@ -59,5 +59,5 @@
     }, { passive: true });
 
     updateProgress();
-  })();
+  });
 </script>
