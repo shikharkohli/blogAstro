@@ -1,13 +1,15 @@
 ---
-title: 'A/B testing'
-description: 'Exploring the ancient Stoic philosophy and its practical wisdom for living a good life.'
+title: "A Growth PM's Guide to Not Lying With Data"
+description: 'The math behind A/B testing is not a PhD-level problem. This post strips away the jargon and covers the three concepts every PM needs: statistical significance, confidence intervals, and minimum detectable effect.'
 pubDate: 'Sep 27 2025'
-slug: 'stoic-philosophy'
+slug: 'ab-testing-guide'
 heroImage: '../../assets/Greek_philosopher_busts.jpg'
 heroImageAlt: 'Greek philosopher busts:  Sokrates, Antisthenes, Chrysippos, Epikouros'
-tags: ['Philosophy', 'Greek Philosophy', 'Stoicism']
+tags: ['Growth', 'A/B Testing', 'Product Management']
 ---
 
+import Callout from '../../components/Callout.astro';
+import SectionBreak from '../../components/SectionBreak.astro';
 
 # A Growth PM's Guide to Not Lying With Data
 
@@ -35,6 +37,10 @@ This is where p-values come in, and where most PMs get it wrong.
 
 A p-value of 0.04 does *not* mean "there's a 96% chance the variant is better." This is the single most common misinterpretation I see, and it changes decisions. What p=0.04 actually means: if there were truly no difference between control and variant, you'd see results this extreme only 4% of the time. It's a statement about the evidence, not about the truth.
 
+<Callout>
+**The p-value trap:** p=0.04 means "this evidence would be unlikely if nothing changed." It does *not* mean "there's a 96% chance something changed." One is about the data. The other is about the world. PMs confuse the two constantly.
+</Callout>
+
 Think about the courtroom again. The prosecutor presents a strong case. That doesn't mean the defendant is guilty. It means the evidence would be unlikely if they were innocent. Those are different statements, and confusing them is how PMs overstate confidence in test results.
 
 The 0.05 threshold everyone uses? It's a convention. Not a law of physics. It's the statistical equivalent of "beyond reasonable doubt" — a socially agreed-upon line that Fisher proposed and the industry adopted. There's nothing magical about it. A p-value of 0.049 and 0.051 are practically identical, but one gets shipped and the other gets killed.
@@ -51,6 +57,8 @@ Two more courtroom parallels worth knowing. A Type I error — false positive �
 
 Statistical significance answers one question: *did something happen?* It says nothing about *how much* happened. For that, you need confidence intervals.
 
+<SectionBreak />
+
 ## Confidence Intervals: The Range You're Actually Betting On
 
 Statistical significance gives you a yes or no. Your stakeholders ask "by how much?" The confidence interval is the honest answer.
@@ -62,6 +70,10 @@ A 95% confidence interval means this: if you ran the same experiment 100 times, 
 Here's why CIs matter more than p-values for PM decisions: they give you a range of plausible business impact, not just a binary signal.
 
 Let's continue the example from the last section. Your conversion rate went from 5.0% to 5.3%, p=0.03. Sounds like a win. Now look at the confidence interval: [+0.05%, +0.55%]. The true lift could be anywhere in that range. At +0.55%, this is a meaningful feature worth investing in. At +0.05%, it's noise that happens to be statistically significant. Same test, same p-value — completely different decisions depending on where in the CI the truth sits.
+
+<Callout>
+**Same p-value, opposite decisions.** A CI of [+0.05%, +0.55%] means the truth could be "invest heavily" or "not worth the code complexity." The p-value can't tell you which. The CI can.
+</Callout>
 
 The width of the interval tells you how much you actually learned. A narrow CI means the test gave you a sharp, usable answer. A wide CI means you ran an experiment and came out the other side barely smarter than when you started. Width is a function of sample size — more users, narrower interval, sharper answer.
 
@@ -75,6 +87,8 @@ Back to the courtroom. If the p-value is the verdict — guilty or not guilty �
 
 Confidence intervals tell you how much happened, and how precisely you know it. But here's the catch: CI width is something you *discover after* the test. Minimum detectable effect is how you *plan for* the right precision before you run it.
 
+<SectionBreak />
+
 ## Minimum Detectable Effect: The Question You Forgot to Ask
 
 Most PMs skip this concept entirely. It's the least discussed of the three, and arguably the most important.
@@ -82,6 +96,10 @@ Most PMs skip this concept entirely. It's the least discussed of the three, and 
 MDE is the smallest lift your test can reliably detect, given your sample size, baseline conversion rate, and significance threshold. Below that threshold, your test is blind. It doesn't matter how long you run it or how carefully you read the results. If the real effect is smaller than your MDE, your experiment will never see it.
 
 Think of it as a flashlight. You're searching for something in the dark. If the thing you're looking for is 200 meters away and your flashlight reaches 50 meters, standing there longer doesn't help. You don't need more patience. You need a stronger light.
+
+<Callout>
+**The flashlight rule:** If your test's MDE is 15% but the real effect is 3%, no amount of waiting will help. You need more traffic, a bigger intervention, or a different validation method entirely.
+</Callout>
 
 This connects to a concept called statistical power — the probability that your test will detect a real effect when one exists. The industry standard is 80% power, meaning you accept a 20% chance of missing a real effect. MDE is the effect size at which your test hits that power level. Below it, you're mostly guessing.
 
@@ -102,6 +120,8 @@ This connects back to confidence intervals. A well-powered test — one with a l
 If you take one thing from this section: asking "what's our MDE?" before a test launches is the single highest-signal question a PM can ask in an experimentation review. It separates PMs who understand testing from PMs who are along for the ride.
 
 Now that you understand all three concepts — significance, confidence intervals, and MDE — let's look at what happens when PMs ignore them.
+
+<SectionBreak />
 
 ## The Three Mistakes
 

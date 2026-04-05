@@ -156,6 +156,30 @@ hr {
 	border: none;
 	border-top: 1px solid rgb(var(--gray-light));
 }
+/* --- Callout component --- */
+.callout {
+	margin: 1.5em 0;
+	padding: 1em 1.25em;
+	border-left: 3px solid var(--accent);
+	background: rgba(var(--gray-light), 0.25);
+	border-radius: 0 6px 6px 0;
+	font-size: 0.92em;
+	line-height: 1.65;
+}
+[data-theme="dark"] .callout {
+	background: rgba(255, 255, 255, 0.04);
+}
+
+/* --- Section divider --- */
+.section-divider {
+	text-align: center;
+	margin: 2.5em 0;
+	color: rgb(var(--gray));
+	font-size: 0.9em;
+	letter-spacing: 0.5em;
+}
+
+/* --- Mobile overrides --- */
 @media (max-width: 720px) {
 	body {
 		font-size: 18px;
@@ -163,17 +187,46 @@ hr {
 	main {
 		padding: 1em;
 	}
-	h1 {
-		font-size: 2rem;
+
+	/* More horizontal breathing room on mobile */
+	.prose {
+		padding-left: 1.25em;
+		padding-right: 1.25em;
 	}
-	h2 {
+
+	/* Section headings need clear chapter breaks on mobile */
+	.prose h2 {
+		margin-top: 2.5em;
+		padding-top: 1.5em;
+		border-top: 1px solid rgba(var(--gray-light), 0.5);
+	}
+	.prose h2:first-of-type {
+		border-top: none;
+		margin-top: 1em;
+		padding-top: 0;
+	}
+	.prose h3 {
+		margin-top: 2em;
+	}
+
+	h1 {
 		font-size: 1.75rem;
 	}
-	h3 {
+	h2 {
 		font-size: 1.5rem;
 	}
+	h3 {
+		font-size: 1.3rem;
+	}
 	h4 {
-		font-size: 1.25rem;
+		font-size: 1.15rem;
+	}
+
+	/* Tighter callouts on mobile */
+	.callout {
+		margin: 1.75em 0;
+		padding: 0.9em 1em;
+		font-size: 0.9em;
 	}
 }
 
