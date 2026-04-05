@@ -1,0 +1,67 @@
+---
+const isDev = import.meta.env.DEV;
+
+let todoCount = 0;
+if (isDev) {
+  const files = import.meta.glob('../content/blog/**/*.{md,mdx}', {
+    query: '?raw',
+    import: 'default',
+    eager: true,
+  }) as Record<string, string>;
+  todoCount = Object.values(files).filter(content => content.includes('<Todo')).length;
+}
+---
+
+{isDev && todoCount > 0 && (
+  <div class="todo-banner" id="todo-banner">
+    <span>⚠ Dev only — {todoCount} article{todoCount !== 1 ? 's' : ''} ha{todoCount !== 1 ? 've' : 's'} TODO items</span>
+    <button class="todo-banner-dismiss" id="todo-banner-dismiss" aria-label="Dismiss TODO banner">✕</button>
+  </div>
+)}
+
+<style>
+  .todo-banner {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    height: 36px;
+    background: #f59e0b;
+    color: #1c1917;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2.5em 0 1em;
+    font-size: 0.8em;
+    font-weight: 600;
+    font-family: inherit;
+  }
+  .todo-banner-dismiss {
+    position: absolute;
+    right: 0.75em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    color: #1c1917;
+    padding: 0.25em;
+    line-height: 1;
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var banner = document.getElementById('todo-banner');
+    if (!banner) return;
+    banner.style.display = 'flex';
+    document.body.style.paddingTop = '36px';
+    var btn = document.getElementById('todo-banner-dismiss');
+    if (btn) {
+      btn.addEventListener('click', function () {
+        banner.style.display = 'none';
+        document.body.style.paddingTop = '';
+      });
+    }
+  })();
+</script>

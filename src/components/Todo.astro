@@ -1,0 +1,29 @@
+---
+const isDev = import.meta.env.DEV;
+---
+
+{isDev && (
+  <aside class="todo-callout">
+    <span class="todo-badge">TODO</span>
+    <slot />
+  </aside>
+)}
+
+<style>
+  .todo-callout {
+    border-left: 3px solid #f59e0b;
+    background: rgba(245, 158, 11, 0.08);
+    padding: 0.75em 1em;
+    margin: 1em 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .todo-badge {
+    display: block;
+    font-size: 0.7em;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #b45309;
+    text-transform: uppercase;
+    margin-bottom: 0.3em;
+  }
+</style>
