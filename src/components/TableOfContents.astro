@@ -1,0 +1,411 @@
+---
+---
+
+<!-- Inline TOC (visible on load, inside article flow) -->
+<nav class="toc-inline" id="toc-inline" aria-label="Table of contents">
+  <button class="toc-inline-toggle" id="toc-inline-toggle" aria-expanded="true">
+    <span class="toc-inline-label">Contents</span>
+    <span class="toc-inline-chevron" id="toc-inline-chevron">▾</span>
+  </button>
+  <ol class="toc-inline-list" id="toc-inline-list"></ol>
+</nav>
+
+<!-- Mobile floating TOC (appears after scrolling past inline TOC) -->
+<div class="toc-float" id="toc-float" aria-hidden="true">
+  <button class="toc-float-btn" id="toc-float-btn" aria-label="Open table of contents">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <rect x="1" y="2" width="10" height="1.5" rx="0.75" fill="currentColor"/>
+      <rect x="1" y="6" width="14" height="1.5" rx="0.75" fill="currentColor"/>
+      <rect x="1" y="10" width="8" height="1.5" rx="0.75" fill="currentColor"/>
+      <rect x="1" y="14" width="12" height="1.5" rx="0.75" fill="currentColor" opacity="0.4"/>
+    </svg>
+    <span class="toc-float-label" id="toc-float-label">Contents</span>
+  </button>
+</div>
+
+<!-- Mobile slide-up panel -->
+<div class="toc-panel-overlay" id="toc-panel-overlay"></div>
+<nav class="toc-panel" id="toc-panel" aria-label="Table of contents">
+  <div class="toc-panel-header">
+    <span>Contents</span>
+    <button class="toc-panel-close" id="toc-panel-close" aria-label="Close table of contents">✕</button>
+  </div>
+  <ol class="toc-panel-list" id="toc-panel-list"></ol>
+</nav>
+
+<style>
+  /* ---- Inline TOC ---- */
+  .toc-inline {
+    margin: 0.5em 0 2em;
+    padding: 0;
+    border: 1px solid rgba(var(--gray-light), 0.6);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .toc-inline-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.75em 1em;
+    background: rgba(var(--gray-light), 0.15);
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: rgb(var(--gray-dark));
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .toc-inline-chevron {
+    transition: transform 0.2s ease;
+    font-size: 0.9em;
+  }
+  .toc-inline-toggle[aria-expanded="false"] .toc-inline-chevron {
+    transform: rotate(-90deg);
+  }
+  .toc-inline-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.5em 1em 0.75em;
+  }
+  .toc-inline-list.collapsed {
+    display: none;
+  }
+  .toc-inline-list li {
+    margin: 0;
+    padding: 0;
+  }
+  .toc-inline-list li a {
+    display: block;
+    padding: 0.4em 0;
+    font-size: 0.88em;
+    line-height: 1.4;
+    color: rgb(var(--gray));
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    padding-left: 0.75em;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .toc-inline-list li a:hover {
+    color: var(--accent);
+  }
+  .toc-inline-list li a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    font-weight: 500;
+  }
+  .toc-inline-list li.toc-h3 a {
+    padding-left: 1.75em;
+    font-size: 0.84em;
+  }
+
+  /* ---- Floating pill (mobile only) ---- */
+  .toc-float {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    z-index: 100;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .toc-float.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .toc-float-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.65em 1.1em;
+    background: var(--header-bg);
+    border: 1px solid rgba(var(--gray-light), 0.6);
+    border-radius: 100px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.82em;
+    font-weight: 500;
+    color: rgb(var(--gray-dark));
+    white-space: nowrap;
+  }
+  .toc-float-btn svg {
+    flex-shrink: 0;
+  }
+
+  /* ---- Slide-up panel (mobile) ---- */
+  .toc-panel-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .toc-panel-overlay.open {
+    display: block;
+    opacity: 1;
+  }
+  .toc-panel {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 65vh;
+    background: var(--bg-color);
+    border-top: 1px solid rgba(var(--gray-light), 0.5);
+    border-radius: 16px 16px 0 0;
+    z-index: 201;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .toc-panel.open {
+    display: block;
+    transform: translateY(0);
+  }
+  .toc-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1em 1.25em;
+    font-weight: 600;
+    font-size: 0.9em;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: rgb(var(--gray-dark));
+    border-bottom: 1px solid rgba(var(--gray-light), 0.4);
+    position: sticky;
+    top: 0;
+    background: var(--bg-color);
+  }
+  .toc-panel-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1em;
+    color: rgb(var(--gray));
+    padding: 0.25em;
+    line-height: 1;
+  }
+  .toc-panel-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.75em 1.25em 1.5em;
+  }
+  .toc-panel-list li a {
+    display: block;
+    padding: 0.65em 0;
+    padding-left: 0.75em;
+    font-size: 0.92em;
+    line-height: 1.4;
+    color: rgb(var(--gray));
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .toc-panel-list li a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    font-weight: 500;
+  }
+  .toc-panel-list li.toc-h3 a {
+    padding-left: 1.75em;
+    font-size: 0.86em;
+  }
+
+  /* Show floating pill only on mobile-ish widths */
+  @media (max-width: 720px) {
+    .toc-float {
+      display: block;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    // --- Extract headings from article ---
+    const prose = document.querySelector('.prose');
+    if (!prose) return;
+
+    const headings = Array.from(prose.querySelectorAll('h2, h3')).filter(function (h) {
+      // skip the article title h1 and any empty headings
+      return h.textContent.trim().length > 0;
+    });
+
+    if (headings.length < 2) {
+      // Not enough headings to warrant a TOC
+      var tocInline = document.getElementById('toc-inline');
+      if (tocInline) tocInline.style.display = 'none';
+      return;
+    }
+
+    // Ensure each heading has an id for anchor linking
+    headings.forEach(function (h, i) {
+      if (!h.id) {
+        h.id = 'heading-' + i;
+      }
+    });
+
+    // --- Build TOC items ---
+    function buildTocItems(container) {
+      headings.forEach(function (h) {
+        var li = document.createElement('li');
+        if (h.tagName === 'H3') li.classList.add('toc-h3');
+        var a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = h.textContent;
+        a.setAttribute('data-heading-id', h.id);
+        li.appendChild(a);
+        container.appendChild(li);
+      });
+    }
+
+    var inlineList = document.getElementById('toc-inline-list');
+    var panelList = document.getElementById('toc-panel-list');
+    if (inlineList) buildTocItems(inlineList);
+    if (panelList) buildTocItems(panelList);
+
+    // --- Inline TOC toggle ---
+    var inlineToggle = document.getElementById('toc-inline-toggle');
+    if (inlineToggle && inlineList) {
+      inlineToggle.addEventListener('click', function () {
+        var expanded = inlineToggle.getAttribute('aria-expanded') === 'true';
+        inlineToggle.setAttribute('aria-expanded', String(!expanded));
+        inlineList.classList.toggle('collapsed');
+      });
+    }
+
+    // --- Active heading tracking ---
+    var allTocLinks = document.querySelectorAll('[data-heading-id]');
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var id = entry.target.id;
+          allTocLinks.forEach(function (link) {
+            if (link.getAttribute('data-heading-id') === id) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
+          });
+          // Update floating pill label
+          var floatLabel = document.getElementById('toc-float-label');
+          if (floatLabel) {
+            floatLabel.textContent = entry.target.textContent;
+          }
+        }
+      });
+    }, {
+      rootMargin: '-10% 0px -75% 0px',
+      threshold: 0
+    });
+
+    headings.forEach(function (h) { observer.observe(h); });
+
+    // --- Floating pill visibility (mobile) ---
+    var tocInlineEl = document.getElementById('toc-inline');
+    var tocFloat = document.getElementById('toc-float');
+
+    if (tocInlineEl && tocFloat) {
+      var floatObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            tocFloat.classList.remove('visible');
+          } else {
+            // Only show if scrolled past (not above)
+            if (entry.boundingClientRect.top < 0) {
+              tocFloat.classList.add('visible');
+            } else {
+              tocFloat.classList.remove('visible');
+            }
+          }
+        });
+      }, { threshold: 0 });
+
+      floatObserver.observe(tocInlineEl);
+    }
+
+    // --- Panel open/close ---
+    var floatBtn = document.getElementById('toc-float-btn');
+    var panel = document.getElementById('toc-panel');
+    var overlay = document.getElementById('toc-panel-overlay');
+    var closeBtn = document.getElementById('toc-panel-close');
+
+    function openPanel() {
+      if (panel && overlay) {
+        panel.classList.add('open');
+        overlay.classList.add('open');
+        panel.setAttribute('aria-hidden', 'false');
+        tocFloat.classList.remove('visible');
+      }
+    }
+    function closePanel() {
+      if (panel && overlay) {
+        panel.classList.remove('open');
+        overlay.classList.remove('open');
+        panel.setAttribute('aria-hidden', 'true');
+        // Re-show float pill after a short delay
+        setTimeout(function () {
+          if (tocInlineEl) {
+            var rect = tocInlineEl.getBoundingClientRect();
+            if (rect.top < 0) {
+              tocFloat.classList.add('visible');
+            }
+          }
+        }, 350);
+      }
+    }
+
+    if (floatBtn) floatBtn.addEventListener('click', openPanel);
+    if (closeBtn) closeBtn.addEventListener('click', closePanel);
+    if (overlay) overlay.addEventListener('click', closePanel);
+
+    // Close panel on TOC link click and smooth scroll
+    if (panelList) {
+      panelList.addEventListener('click', function (e) {
+        var link = e.target.closest('a');
+        if (link) {
+          e.preventDefault();
+          closePanel();
+          var targetId = link.getAttribute('data-heading-id');
+          var target = document.getElementById(targetId);
+          if (target) {
+            setTimeout(function () {
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+          }
+        }
+      });
+    }
+
+    // Smooth scroll for inline TOC links too
+    if (inlineList) {
+      inlineList.addEventListener('click', function (e) {
+        var link = e.target.closest('a');
+        if (link) {
+          e.preventDefault();
+          var targetId = link.getAttribute('data-heading-id');
+          var target = document.getElementById(targetId);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    }
+
+    // Close panel on Escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closePanel();
+    });
+  })();
+</script>
