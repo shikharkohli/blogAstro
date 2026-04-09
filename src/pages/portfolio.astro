@@ -1,0 +1,298 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+import { projects } from '../data/portfolio';
+
+const pageTitle = `Portfolio | ${SITE_TITLE}`;
+const pageDescription = 'Explore my professional and technical projects, from product development to open-source contributions.';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={pageTitle} description={pageDescription} />
+	</head>
+	<body>
+		<Header />
+		<main id="main">
+			<h1>Portfolio</h1>
+			<p>
+				A collection of projects I've worked on—ranging from product development and technical implementations to open-source contributions. Each project represents an opportunity to solve problems, learn new technologies, and create meaningful impact.
+			</p>
+
+			<div class="projects-grid">
+				{
+					projects.sort((a, b) => a.order - b.order).map((project) => (
+						<article class="project-card">
+							{project.imageUrl && (
+								<div class="project-image">
+									<img src={project.imageUrl} alt={project.title} />
+								</div>
+							)}
+							{!project.imageUrl && (
+								<div class="project-image-placeholder"></div>
+							)}
+
+							<div class="project-content">
+								<h3>{project.title}</h3>
+								<p class="description">{project.description}</p>
+
+								{project.skills.length > 0 && (
+									<div class="skills">
+										{project.skills.map((skill) => (
+											<span class="skill-tag">{skill}</span>
+										))}
+									</div>
+								)}
+
+								{project.impact && (
+									<div class="impact">
+										<p class="impact-metric">{project.impact.metric}</p>
+										<p class="impact-description">{project.impact.description}</p>
+									</div>
+								)}
+
+								{(project.links.github || project.links.demo || project.links.website) && (
+									<div class="project-links">
+										{project.links.github && (
+											<a href={project.links.github} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} GitHub repository`} class="link-button">
+												GitHub
+											</a>
+										)}
+										{project.links.demo && (
+											<a href={project.links.demo} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} class="link-button">
+												Demo
+											</a>
+										)}
+										{project.links.website && (
+											<a href={project.links.website} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} website`} class="link-button">
+												Website
+											</a>
+										)}
+									</div>
+								)}
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	/* Projects Grid */
+	.projects-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.5rem;
+		margin-bottom: 3rem;
+	}
+
+	/* Project Card */
+	.project-card {
+		border: 1px solid rgba(35, 55, 255, 0.1);
+		border-radius: 8px;
+		overflow: hidden;
+		background: rgba(35, 55, 255, 0.02);
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.project-card:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 8px 20px rgba(35, 55, 255, 0.15);
+	}
+
+	/* Project Image */
+	.project-image {
+		width: 100%;
+		height: 200px;
+		overflow: hidden;
+		background: linear-gradient(135deg, rgba(35, 55, 255, 0.1), rgba(35, 55, 255, 0.05));
+	}
+
+	.project-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.project-image-placeholder {
+		width: 100%;
+		height: 200px;
+		background: linear-gradient(135deg, rgba(35, 55, 255, 0.15), rgba(35, 55, 255, 0.08));
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: rgba(35, 55, 255, 0.3);
+	}
+
+	/* Project Content */
+	.project-content {
+		padding: 1.5rem;
+	}
+
+	.project-content h3 {
+		margin-top: 0;
+		margin-bottom: 0.75rem;
+		font-size: 1.25rem;
+		color: var(--accent);
+		line-height: 1.3;
+	}
+
+	.project-content .description {
+		margin: 0 0 1rem 0;
+		font-size: 0.95rem;
+		color: var(--text-color);
+		line-height: 1.6;
+	}
+
+	/* Skills Tags */
+	.skills {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 1rem;
+	}
+
+	.skill-tag {
+		display: inline-block;
+		padding: 0.25rem 0.75rem;
+		background: rgba(35, 55, 255, 0.1);
+		color: var(--accent);
+		border-radius: 4px;
+		font-size: 0.8rem;
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	/* Impact Section */
+	.impact {
+		margin-bottom: 1.25rem;
+		padding-top: 1rem;
+		border-top: 1px solid rgba(35, 55, 255, 0.1);
+	}
+
+	.impact-metric {
+		margin: 0 0 0.25rem 0;
+		font-weight: 700;
+		color: var(--accent);
+		font-size: 1rem;
+	}
+
+	.impact-description {
+		margin: 0;
+		font-size: 0.85rem;
+		color: var(--text-color);
+		opacity: 0.85;
+	}
+
+	/* Project Links */
+	.project-links {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.link-button {
+		display: inline-block;
+		padding: 0.5rem 1rem;
+		background: var(--accent);
+		color: white;
+		text-decoration: none;
+		border-radius: 4px;
+		font-size: 0.85rem;
+		font-weight: 600;
+		transition: transform 0.2s ease, opacity 0.2s ease;
+	}
+
+	.link-button:hover {
+		transform: scale(1.05);
+		opacity: 0.9;
+	}
+
+	/* Dark Mode */
+	html[data-theme='dark'] .project-card {
+		border-color: rgba(70, 232, 86, 0.1);
+		background: rgba(70, 232, 86, 0.02);
+	}
+
+	html[data-theme='dark'] .project-card:hover {
+		box-shadow: 0 8px 20px rgba(70, 232, 86, 0.15);
+	}
+
+	html[data-theme='dark'] .project-image,
+	html[data-theme='dark'] .project-image-placeholder {
+		background: linear-gradient(135deg, rgba(70, 232, 86, 0.1), rgba(70, 232, 86, 0.05));
+	}
+
+	html[data-theme='dark'] .project-image-placeholder {
+		color: rgba(70, 232, 86, 0.3);
+	}
+
+	html[data-theme='dark'] .skill-tag {
+		background: rgba(70, 232, 86, 0.1);
+		color: #46e856;
+	}
+
+	html[data-theme='dark'] .impact {
+		border-color: rgba(70, 232, 86, 0.1);
+	}
+
+	html[data-theme='dark'] .link-button {
+		background: #46e856;
+		color: #1a1a1a;
+	}
+
+	/* Responsive Design */
+	@media (max-width: 900px) {
+		.projects-grid {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1.25rem;
+		}
+
+		.project-card {
+			border-radius: 6px;
+		}
+
+		.project-content {
+			padding: 1.25rem;
+		}
+
+		.project-image {
+			height: 180px;
+		}
+	}
+
+	@media (max-width: 720px) {
+		.projects-grid {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+
+		.project-content h3 {
+			font-size: 1.1rem;
+		}
+
+		.project-content .description {
+			font-size: 0.9rem;
+		}
+
+		.project-image {
+			height: 160px;
+		}
+
+		.skill-tag {
+			font-size: 0.75rem;
+			padding: 0.2rem 0.6rem;
+		}
+
+		.link-button {
+			font-size: 0.8rem;
+			padding: 0.4rem 0.8rem;
+		}
+	}
+</style>
