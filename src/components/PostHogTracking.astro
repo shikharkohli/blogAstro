@@ -1,0 +1,43 @@
+---
+// PostHog Analytics Component
+// Automatically tracks page views and user interactions
+// API key stored safely in environment variables (never committed to GitHub)
+
+const posthogApiKey = import.meta.env.POSTHOG_API_KEY;
+const posthogApiUrl = import.meta.env.POSTHOG_API_URL;
+
+// Only add tracking if API key is configured
+const isConfigured = posthogApiKey && posthogApiUrl;
+---
+
+{
+	isConfigured && (
+		<script
+			async
+			defer
+			src={`${posthogApiUrl.replace(/\/$/, '')}/static/array.js`}
+		></script>
+	)
+}
+
+{
+	isConfigured && (
+		<script is:inline define:vars={{ posthogApiKey, posthogApiUrl }}>
+			window.posthogSettings = {
+				api_host: posthogApiUrl.replace(/\/$/, ''),
+			};
+
+			// PostHog auto-tracks page views and clicks by default
+			if (window.posthog) {
+				// Identify anonymous user (optional - creates consistent session)
+				window.posthog.identify();
+
+				// Optional: Set custom properties about the current page
+				window.posthog.capture('page_view', {
+					title: document.title,
+					path: window.location.pathname,
+				});
+			}
+		</script>
+	)
+}

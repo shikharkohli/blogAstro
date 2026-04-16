@@ -5,6 +5,7 @@ import '../styles/global.css';
 import FallbackImage from '../assets/Greek_philosopher_busts.jpg';
 import { SITE_TITLE } from '../consts';
 import { Font } from 'astro:assets';
+import PostHogTracking from './PostHogTracking.astro';
 
 interface Props {
 	title: string;
@@ -55,6 +56,9 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+
+<!-- PostHog Analytics -->
+<PostHogTracking />
 
 <!-- Theme initialization - runs immediately to prevent flash -->
 <script is:inline>
