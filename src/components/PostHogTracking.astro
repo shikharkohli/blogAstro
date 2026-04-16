@@ -1,0 +1,74 @@
+---
+// PostHog Analytics Tracker Component
+// Initializes PostHog with auto-tracking for page views and user interactions
+
+const posthogKey = import.meta.env.POSTHOG_API_KEY;
+const posthogUrl = import.meta.env.POSTHOG_API_URL;
+
+// Only render if API key is configured
+if (!posthogKey || !posthogUrl) {
+	console.warn('PostHog not configured. Add POSTHOG_API_KEY and POSTHOG_API_URL to .env.local');
+}
+---
+
+{
+	posthogKey && (
+		<script
+			async
+			defer
+			data-api={`${posthogUrl}decide/?v=3`}
+			data-key={posthogKey}
+			src="https://array.posthog.com/array.js"
+		></script>
+	)
+}
+
+<script define:vars={{ posthogKey, posthogUrl }}>
+	if (window.posthog && posthogKey) {
+		// Auto-track page views
+		window.posthog.pageview();
+
+		// Track page visibility changes
+		document.addEventListener('visibilitychange', () => {
+			if (document.hidden) {
+				// Page lost focus
+				window.posthog.capture('page_blur');
+			} else {
+				// Page regained focus
+				window.posthog.capture('page_focus');
+			}
+		});
+
+		// Track link clicks to external sites
+		document.addEventListener('click', (event) => {
+			const target = event.target?.closest('a');
+			if (target && (target.href.startsWith('http') || target.href.startsWith('//'))) {
+				const isExternal = !target.href.includes(window.location.hostname);
+				if (isExternal) {
+					window.posthog.capture('external_link_clicked', {
+						url: target.href,
+						text: target.textContent,
+						page: window.location.pathname,
+					});
+				}
+			}
+		});
+
+		// Track scroll depth
+		let maxScroll = 0;
+		window.addEventListener('scroll', () => {
+			const scrollPercent =
+				(window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+			if (scrollPercent > maxScroll) {
+				maxScroll = scrollPercent;
+				if (scrollPercent > 25 && scrollPercent <= 50) {
+					window.posthog.capture('scroll_25_percent');
+				} else if (scrollPercent > 50 && scrollPercent <= 75) {
+					window.posthog.capture('scroll_50_percent');
+				} else if (scrollPercent > 75) {
+					window.posthog.capture('scroll_75_percent');
+				}
+			}
+		});
+	}
+</script>
