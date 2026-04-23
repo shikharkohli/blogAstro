@@ -38,54 +38,40 @@ const jsonLd = {
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
 <style>
-	nav {
-		margin-bottom: 2rem;
-	}
-	
+	nav { margin-bottom: 28px; }
+
 	.breadcrumb {
 		display: flex;
 		flex-wrap: wrap;
 		list-style: none;
 		padding: 0;
 		margin: 0;
-		font-size: 0.875rem;
-		color: rgb(var(--gray));
+		font-size: 13px;
+		color: var(--fg-muted);
+		font-family: var(--font-mono);
 	}
-	
-	.breadcrumb li {
-		display: flex;
-		align-items: center;
-	}
-	
+	.breadcrumb li { display: flex; align-items: center; }
 	.breadcrumb li:not(:last-child)::after {
 		content: '/';
-		margin: 0 0.5rem;
-		color: rgb(var(--gray));
+		margin: 0 10px;
+		color: var(--border-strong);
 	}
-	
 	.breadcrumb a {
-		color: var(--accent);
+		color: var(--fg-muted);
 		text-decoration: none;
-		transition: opacity 0.2s ease;
+		transition: color var(--dur-fast) var(--ease-out);
 	}
-	
 	.breadcrumb a:hover {
-		opacity: 0.8;
-		text-decoration: underline;
+		color: var(--fg-strong);
+		text-decoration: none;
 	}
-	
 	.breadcrumb span[aria-current="page"] {
-		color: rgb(var(--gray-dark));
+		color: var(--fg-strong);
 		font-weight: 500;
 	}
-	
+
 	@media (max-width: 720px) {
-		.breadcrumb {
-			font-size: 0.8rem;
-		}
-		
-		.breadcrumb li:not(:last-child)::after {
-			margin: 0 0.375rem;
-		}
+		.breadcrumb { font-size: 12px; }
+		.breadcrumb li:not(:last-child)::after { margin: 0 6px; }
 	}
 </style>
