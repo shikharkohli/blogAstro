@@ -122,17 +122,22 @@
     display: flex;
     align-items: center;
     gap: 0.5em;
-    padding: 0.65em 1.1em;
-    background: var(--bg-raised);
-    border: 1px solid var(--border-subtle);
+    padding: 0.7em 1.2em;
+    background: var(--bg-inverse);
+    color: var(--fg-inverse);
+    border: 1px solid var(--bg-inverse);
     border-radius: 100px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg);
     cursor: pointer;
     font-family: inherit;
     font-size: 0.82em;
     font-weight: 500;
-    color: var(--fg-strong);
     white-space: nowrap;
+    transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+  }
+  .toc-float-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-xl);
   }
   .toc-float-btn svg {
     flex-shrink: 0;
