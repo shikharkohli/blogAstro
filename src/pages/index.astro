@@ -24,6 +24,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 					<div class="intro-content">
 						<h1>Hello! I'm Shikhar K</h1>
 						<p>Welcome to <strong>Vibes and Variance</strong>, a space for exploring the intersection of math, programming, product thinking, psychology, and game theory. I write about ideas that fascinate me and hope they might fascinate you too.</p>
+						<a href="/blog" class="cta-button">Explore the Blog →</a>
 					</div>
 				</div>
 			</section>
@@ -45,10 +46,6 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 						<p>Creating meaningful products, understanding user needs, and business strategy.</p>
 					</article>
 					<article class="interest-card">
-						<h3>Psychology</h3>
-						<p>Understanding human behavior, decision-making, and what drives us.</p>
-					</article>
-					<article class="interest-card">
 						<h3>Game Theory</h3>
 						<p>Strategic interactions, cooperation, competition, and rational choice.</p>
 					</article>
@@ -62,10 +59,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 				<p>I aim for thoughtful, nuanced writing that respects your time and intelligence. Whether you're here for a specific topic or just browsing, I hope you find something that sparks your curiosity.</p>
 			</section>
 
-			<!-- Call-to-Action -->
-			<section class="cta-section">
-				<a href="/blog" class="cta-button">Explore the Blog →</a>
-			</section>
+
 		</main>
 		<Footer />
 	</body>
@@ -170,14 +164,8 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	}
 
 	/* Call-to-Action */
-	.cta-section {
-		text-align: center;
-		margin-top: 4rem;
-		padding-top: 2rem;
-		border-top: 1px solid rgba(35, 55, 255, 0.1);
-	}
-
 	.cta-button {
+		margin-top: 1.5rem;
 		display: inline-block;
 		padding: 0.75rem 1.5rem;
 		background: var(--accent);
@@ -222,8 +210,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 		color: #46e856;
 	}
 
-	html[data-theme='dark'] .blog-expectations-section,
-	html[data-theme='dark'] .cta-section {
+	html[data-theme='dark'] .blog-expectations-section {
 		border-color: rgba(70, 232, 86, 0.1);
 	}
 
@@ -279,10 +266,6 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 		.interests-section,
 		.blog-expectations-section {
 			margin-bottom: 2rem;
-		}
-
-		.cta-section {
-			margin-top: 2rem;
 		}
 	}
 </style>
