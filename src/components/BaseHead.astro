@@ -4,7 +4,6 @@
 import '../styles/global.css';
 import FallbackImage from '../assets/Greek_philosopher_busts.jpg';
 import { SITE_TITLE } from '../consts';
-import { Font } from 'astro:assets';
 import PostHogTracking from './PostHogTracking.astro';
 
 interface Props {
@@ -30,10 +29,6 @@ const { title, description, image = FallbackImage } = Astro.props;
 	href={new URL('rss.xml', Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
-
-<!-- Fonts -->
-<Font cssVariable="--font-atkinson" preload />
-<Font cssVariable="--font-atkinson-mono" />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
