@@ -2,20 +2,96 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import { Icon } from 'astro-icon/components';
+import { SITE_TITLE } from '../consts';
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title="About" description="This is the about page of the Ataraxia Astro Theme." />
+		<BaseHead title={`About — ${SITE_TITLE}`} description="About Shikhar — a quiet corner for essays on math, product, and the systems underneath." />
 	</head>
 	<body>
-		<Header/>
+		<Header />
 		<main id="main">
-			<h1>About</h1>
-			<p>This is the about page of the <strong>Ataraxia Astro Theme</strong>. You can customize this page to include information about yourself or your website.</p>
-			<p>Feel free to modify the content and style to suit your needs!</p>
+			<section class="about">
+				<div class="portrait" aria-hidden="true"></div>
+				<div class="about-body">
+					<div class="eyebrow">About</div>
+					<h1>Hi, I'm Shikhar.</h1>
+					<p>I write about math, programming, product management, and game theory — topics that sit at the intersection of how systems work and how people think inside them.</p>
+					<p><em>Vibes and Variance</em> is my slower corner of the internet: essays that take their time, questions without tidy answers, and the occasional technical deep dive. No hot takes, no engagement bait.</p>
+					<p>Professionally, I work in product. Here, I'm just thinking out loud — and hoping something lands for you too.</p>
+
+					<div class="link-list">
+						<a href="https://github.com/shikharkohli" target="_blank" rel="noopener noreferrer">
+							<Icon name="simple-icons:github" width={16} height={16} aria-hidden="true" /> GitHub
+						</a>
+						<a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">
+							<Icon name="mdi:linkedin" width={16} height={16} aria-hidden="true" /> LinkedIn
+						</a>
+						<a href="mailto:shikharkohli@gmail.com">
+							<Icon name="mdi:email" width={16} height={16} aria-hidden="true" /> Email
+						</a>
+					</div>
+				</div>
+			</section>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	main { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+	.about {
+		display: grid;
+		grid-template-columns: 220px 1fr;
+		gap: 48px;
+		padding: 72px 0;
+		align-items: start;
+	}
+	.portrait {
+		width: 180px; height: 180px; border-radius: 50%;
+		background: linear-gradient(135deg, #E0D8C8, #C9BFA9);
+		border: 1px solid var(--border-strong);
+	}
+	:global([data-theme="dark"]) .portrait {
+		background: linear-gradient(135deg, #3B3528, #2A2620);
+	}
+	.eyebrow {
+		font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+		font-weight: 500; color: var(--fg-muted); margin-bottom: 16px;
+	}
+	.about h1 {
+		font-size: 36px; font-weight: 600; letter-spacing: -0.02em;
+		color: var(--fg-strong); margin: 0 0 20px;
+	}
+	.about p {
+		font-size: 17px; line-height: 1.7; color: var(--fg);
+		margin: 0 0 16px; max-width: 58ch;
+	}
+	.link-list {
+		margin-top: 28px;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+	.link-list a {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		font-size: 14px;
+		color: var(--fg-muted);
+		text-decoration: none;
+		width: max-content;
+	}
+	.link-list a:hover { color: var(--fg-strong); }
+
+	@media (max-width: 720px) {
+		main { padding: 0 20px; }
+		.about { grid-template-columns: 1fr; gap: 24px; padding: 48px 0; }
+		.portrait { width: 120px; height: 120px; }
+		.about h1 { font-size: 28px; }
+		.about p { font-size: 16px; }
+	}
+</style>

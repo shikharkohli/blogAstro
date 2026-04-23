@@ -2,13 +2,11 @@
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
-import Breadcrumb from '../components/Breadcrumb.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import TagList from '../components/TagList.astro';
 import { SITE_AUTHOR } from '../consts';
-import { Icon } from 'astro-icon/components';
 import ReadingProgress from '../components/ReadingProgress.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 
@@ -20,88 +18,120 @@ const { title, description, pubDate, updatedDate, heroImage, heroImageAlt, tags 
 <html lang="en">
 	<head>
 		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-			.date svg {
-				vertical-align: text-top;
-				margin-right: 0.1rem;
-				color: var(--accent);
-			}
-		</style>
 	</head>
 
 	<body>
 		<ReadingProgress />
 		<Header />
 		<main id="main">
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt={heroImageAlt || ''} />}
+			<article class="article">
+				<div class="article-eyebrow">Essay</div>
+				<h1>{title}</h1>
+				<div class="meta">
+					<span class="author">{SITE_AUTHOR}</span>
+					<span class="dot" aria-hidden="true"></span>
+					<FormattedDate date={pubDate} />
+					{updatedDate && (
+						<>
+							<span class="dot" aria-hidden="true"></span>
+							<span class="updated">Updated <FormattedDate date={updatedDate} /></span>
+						</>
+					)}
 				</div>
-				<div class="prose">
-					<Breadcrumb items={[
-						{ label: 'Home', href: '/' },
-						{ label: 'Blog', href: '/blog' },
-						{ label: title, href: Astro.url.pathname }
-					]} />
-					<div class="title">
-						<div class="date">
-							<Icon name="mdi:calendar" width={20} height={20} aria-hidden="true" />
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<Icon name="mdi:calendar" width={20} height={20} aria-hidden="true" />
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							} - <Icon name="mdi:account" width={20} height={20} aria-hidden="true" />{SITE_AUTHOR}
-						</div>
-						<h1>{title}</h1>
+
+				{heroImage && (
+					<div class="hero-image">
+						<Image width={1020} height={510} src={heroImage} alt={heroImageAlt || ''} />
 					</div>
-					<TableOfContents />
+				)}
+
+				<TableOfContents />
+				<div class="prose">
 					<slot />
-					<hr aria-hidden="true" />
-					<TagList tags={tags} showLabel={true} />
 				</div>
+				<hr aria-hidden="true" />
+				<TagList tags={tags} showLabel={true} />
 			</article>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	main { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+	.article { max-width: 680px; margin: 0 auto; padding: 72px 0 96px; }
+	.article-eyebrow {
+		font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+		font-weight: 500; color: var(--fg-muted); margin-bottom: 16px;
+	}
+	.article h1 {
+		font-size: 44px; line-height: 1.15; letter-spacing: -0.025em;
+		font-weight: 600; color: var(--fg-strong); margin: 0 0 20px;
+		text-wrap: balance;
+	}
+	.meta {
+		display: flex; gap: 12px; align-items: center;
+		font-size: 14px; color: var(--fg-muted); margin-bottom: 40px;
+		flex-wrap: wrap;
+	}
+	.meta .dot {
+		width: 3px; height: 3px; border-radius: 50%;
+		background: var(--border-strong);
+	}
+	.hero-image {
+		margin: 0 0 40px;
+	}
+	.hero-image img {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: 8px;
+		border: 1px solid var(--border-subtle);
+	}
+	.prose { font-size: 18px; line-height: 1.72; color: var(--fg); }
+	.prose :global(p) { margin: 0 0 24px; text-wrap: pretty; }
+	.prose :global(h2) {
+		font-size: 26px; font-weight: 600; color: var(--fg-strong);
+		letter-spacing: -0.015em; margin: 56px 0 16px;
+	}
+	.prose :global(h3) {
+		font-size: 20px; font-weight: 600; color: var(--fg-strong);
+		letter-spacing: -0.01em; margin: 40px 0 12px;
+	}
+	.prose :global(blockquote) {
+		font-size: 19px; line-height: 1.6; color: var(--fg-muted); font-style: italic;
+		border-left: 2px solid var(--border-strong); padding-left: 20px; margin: 32px 0;
+	}
+	.prose :global(hr) {
+		border: 0; border-top: 1px solid var(--border-subtle); margin: 56px 0;
+	}
+	.prose :global(img) { max-width: 100%; height: auto; border-radius: 6px; }
+	.prose :global(code) {
+		font-family: var(--font-mono);
+		font-size: 0.9em;
+		background: var(--bg-muted);
+		padding: 2px 6px;
+		border-radius: 4px;
+	}
+	.prose :global(pre) {
+		background: var(--bg-muted);
+		border: 1px solid var(--border-subtle);
+		border-radius: 6px;
+		padding: 16px 18px;
+		overflow-x: auto;
+		font-size: 14px;
+		line-height: 1.55;
+		margin: 24px 0;
+	}
+	.prose :global(pre code) { background: transparent; padding: 0; }
+	hr {
+		border: 0; border-top: 1px solid var(--border-subtle); margin: 56px 0 24px;
+	}
+
+	@media (max-width: 720px) {
+		main { padding: 0 20px; }
+		.article { padding: 48px 0 64px; }
+		.article h1 { font-size: 32px; }
+		.prose { font-size: 17px; }
+	}
+</style>

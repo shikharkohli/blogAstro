@@ -5,8 +5,9 @@ import Header from '../components/Header.astro';
 import { SITE_TITLE } from '../consts';
 import { projects } from '../data/portfolio';
 
-const pageTitle = `Portfolio | ${SITE_TITLE}`;
-const pageDescription = 'Explore my professional and technical projects, from product development to open-source contributions.';
+const pageTitle = `Work — ${SITE_TITLE}`;
+const pageDescription = 'Projects — product work, technical builds, and open-source contributions.';
+const sorted = projects.sort((a, b) => a.order - b.order);
 ---
 
 <!doctype html>
@@ -17,66 +18,52 @@ const pageDescription = 'Explore my professional and technical projects, from pr
 	<body>
 		<Header />
 		<main id="main">
-			<h1>Portfolio</h1>
-			<p>
-				A collection of projects I've worked on—ranging from product development and technical implementations to open-source contributions. Each project represents an opportunity to solve problems, learn new technologies, and create meaningful impact.
-			</p>
+			<section class="page-hero">
+				<div class="eyebrow">Work</div>
+				<h1>Things I've built and shipped.</h1>
+				<p>A selection of projects — product, technical, and everything in between. Each one was a chance to solve a real problem and learn something sideways.</p>
+			</section>
 
-			<div class="projects-grid">
-				{
-					projects.sort((a, b) => a.order - b.order).map((project) => (
-						<article class="project-card">
-							{project.imageUrl && (
-								<div class="project-image">
-									<img src={project.imageUrl} alt={project.title} />
+			<div class="project-list">
+				{sorted.map((project) => (
+					<article class="project-row">
+						<div class="project-index">{String(project.order).padStart(2, '0')}</div>
+						<div class="project-body">
+							<h2 class="project-title">{project.title}</h2>
+							<p class="project-desc">{project.description}</p>
+
+							{project.skills.length > 0 && (
+								<div class="skills">
+									{project.skills.map((skill) => (
+										<span class="skill-tag">{skill}</span>
+									))}
 								</div>
 							)}
-							{!project.imageUrl && (
-								<div class="project-image-placeholder"></div>
+
+							{project.impact && (
+								<div class="impact">
+									<span class="impact-metric">{project.impact.metric}</span>
+									<span class="impact-sep" aria-hidden="true">·</span>
+									<span class="impact-description">{project.impact.description}</span>
+								</div>
 							)}
 
-							<div class="project-content">
-								<h3>{project.title}</h3>
-								<p class="description">{project.description}</p>
-
-								{project.skills.length > 0 && (
-									<div class="skills">
-										{project.skills.map((skill) => (
-											<span class="skill-tag">{skill}</span>
-										))}
-									</div>
-								)}
-
-								{project.impact && (
-									<div class="impact">
-										<p class="impact-metric">{project.impact.metric}</p>
-										<p class="impact-description">{project.impact.description}</p>
-									</div>
-								)}
-
-								{(project.links.github || project.links.demo || project.links.website) && (
-									<div class="project-links">
-										{project.links.github && (
-											<a href={project.links.github} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} GitHub repository`} class="link-button">
-												GitHub
-											</a>
-										)}
-										{project.links.demo && (
-											<a href={project.links.demo} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} class="link-button">
-												Demo
-											</a>
-										)}
-										{project.links.website && (
-											<a href={project.links.website} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} website`} class="link-button">
-												Website
-											</a>
-										)}
-									</div>
-								)}
-							</div>
-						</article>
-					))
-				}
+							{(project.links.github || project.links.demo || project.links.website) && (
+								<div class="project-links">
+									{project.links.github && (
+										<a href={project.links.github} target="_blank" rel="noopener noreferrer">GitHub →</a>
+									)}
+									{project.links.demo && (
+										<a href={project.links.demo} target="_blank" rel="noopener noreferrer">Demo →</a>
+									)}
+									{project.links.website && (
+										<a href={project.links.website} target="_blank" rel="noopener noreferrer">Website →</a>
+									)}
+								</div>
+							)}
+						</div>
+					</article>
+				))}
 			</div>
 		</main>
 		<Footer />
@@ -84,215 +71,81 @@ const pageDescription = 'Explore my professional and technical projects, from pr
 </html>
 
 <style>
-	/* Projects Grid */
-	.projects-grid {
+	main { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+	.page-hero { padding: 72px 0 56px; max-width: 720px; }
+	.eyebrow {
+		font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+		font-weight: 500; color: var(--fg-muted); margin-bottom: 16px;
+	}
+	.page-hero h1 {
+		font-size: 48px; line-height: 1.1; letter-spacing: -0.025em;
+		font-weight: 600; color: var(--fg-strong); margin: 0 0 20px; text-wrap: balance;
+	}
+	.page-hero p { font-size: 18px; line-height: 1.6; color: var(--fg-muted); margin: 0; max-width: 60ch; }
+
+	.project-list {
+		display: flex;
+		flex-direction: column;
+		border-top: 1px solid var(--border-subtle);
+	}
+	.project-row {
 		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 1.5rem;
-		margin-bottom: 3rem;
+		grid-template-columns: 60px 1fr;
+		gap: 32px;
+		padding: 36px 0;
+		border-bottom: 1px solid var(--border-subtle);
+		align-items: start;
 	}
-
-	/* Project Card */
-	.project-card {
-		border: 1px solid rgba(35, 55, 255, 0.1);
-		border-radius: 8px;
-		overflow: hidden;
-		background: rgba(35, 55, 255, 0.02);
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	.project-index {
+		font-family: var(--font-mono);
+		font-size: 13px;
+		color: var(--fg-subtle);
+		padding-top: 4px;
 	}
-
-	.project-card:hover {
-		transform: translateY(-4px);
-		box-shadow: 0 8px 20px rgba(35, 55, 255, 0.15);
+	.project-title {
+		font-size: 22px;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		color: var(--fg-strong);
+		margin: 0 0 8px;
 	}
-
-	/* Project Image */
-	.project-image {
-		width: 100%;
-		height: 200px;
-		overflow: hidden;
-		background: linear-gradient(135deg, rgba(35, 55, 255, 0.1), rgba(35, 55, 255, 0.05));
-	}
-
-	.project-image img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-
-	.project-image-placeholder {
-		width: 100%;
-		height: 200px;
-		background: linear-gradient(135deg, rgba(35, 55, 255, 0.15), rgba(35, 55, 255, 0.08));
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: rgba(35, 55, 255, 0.3);
-	}
-
-	/* Project Content */
-	.project-content {
-		padding: 1.5rem;
-	}
-
-	.project-content h3 {
-		margin-top: 0;
-		margin-bottom: 0.75rem;
-		font-size: 1.25rem;
-		color: var(--accent);
-		line-height: 1.3;
-	}
-
-	.project-content .description {
-		margin: 0 0 1rem 0;
-		font-size: 0.95rem;
-		color: var(--text-color);
+	.project-desc {
+		font-size: 16px;
 		line-height: 1.6;
+		color: var(--fg-muted);
+		margin: 0 0 16px;
+		max-width: 62ch;
 	}
-
-	/* Skills Tags */
-	.skills {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		margin-bottom: 1rem;
-	}
-
+	.skills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
 	.skill-tag {
-		display: inline-block;
-		padding: 0.25rem 0.75rem;
-		background: rgba(35, 55, 255, 0.1);
-		color: var(--accent);
-		border-radius: 4px;
-		font-size: 0.8rem;
-		font-weight: 600;
-		white-space: nowrap;
+		font-size: 12px;
+		color: var(--fg-muted);
+		background: var(--bg-sunken);
+		padding: 3px 9px;
+		border-radius: 99px;
+		font-family: var(--font-mono);
 	}
-
-	/* Impact Section */
 	.impact {
-		margin-bottom: 1.25rem;
-		padding-top: 1rem;
-		border-top: 1px solid rgba(35, 55, 255, 0.1);
+		font-size: 13px;
+		color: var(--fg-muted);
+		margin-bottom: 14px;
 	}
-
-	.impact-metric {
-		margin: 0 0 0.25rem 0;
-		font-weight: 700;
-		color: var(--accent);
-		font-size: 1rem;
-	}
-
-	.impact-description {
-		margin: 0;
-		font-size: 0.85rem;
-		color: var(--text-color);
-		opacity: 0.85;
-	}
-
-	/* Project Links */
-	.project-links {
-		display: flex;
-		gap: 0.75rem;
-		flex-wrap: wrap;
-	}
-
-	.link-button {
-		display: inline-block;
-		padding: 0.5rem 1rem;
-		background: var(--accent);
-		color: white;
+	.impact-metric { color: var(--fg-strong); font-weight: 500; }
+	.impact-sep { margin: 0 8px; color: var(--border-strong); }
+	.project-links { display: flex; gap: 20px; }
+	.project-links a {
+		font-size: 14px;
+		color: var(--accent-fg);
 		text-decoration: none;
-		border-radius: 4px;
-		font-size: 0.85rem;
-		font-weight: 600;
-		transition: transform 0.2s ease, opacity 0.2s ease;
+		border-bottom: 1px solid transparent;
 	}
-
-	.link-button:hover {
-		transform: scale(1.05);
-		opacity: 0.9;
-	}
-
-	/* Dark Mode */
-	html[data-theme='dark'] .project-card {
-		border-color: rgba(70, 232, 86, 0.1);
-		background: rgba(70, 232, 86, 0.02);
-	}
-
-	html[data-theme='dark'] .project-card:hover {
-		box-shadow: 0 8px 20px rgba(70, 232, 86, 0.15);
-	}
-
-	html[data-theme='dark'] .project-image,
-	html[data-theme='dark'] .project-image-placeholder {
-		background: linear-gradient(135deg, rgba(70, 232, 86, 0.1), rgba(70, 232, 86, 0.05));
-	}
-
-	html[data-theme='dark'] .project-image-placeholder {
-		color: rgba(70, 232, 86, 0.3);
-	}
-
-	html[data-theme='dark'] .skill-tag {
-		background: rgba(70, 232, 86, 0.1);
-		color: #46e856;
-	}
-
-	html[data-theme='dark'] .impact {
-		border-color: rgba(70, 232, 86, 0.1);
-	}
-
-	html[data-theme='dark'] .link-button {
-		background: #46e856;
-		color: #1a1a1a;
-	}
-
-	/* Responsive Design */
-	@media (max-width: 900px) {
-		.projects-grid {
-			grid-template-columns: repeat(2, 1fr);
-			gap: 1.25rem;
-		}
-
-		.project-card {
-			border-radius: 6px;
-		}
-
-		.project-content {
-			padding: 1.25rem;
-		}
-
-		.project-image {
-			height: 180px;
-		}
-	}
+	.project-links a:hover { border-bottom-color: var(--accent); }
 
 	@media (max-width: 720px) {
-		.projects-grid {
-			grid-template-columns: 1fr;
-			gap: 1rem;
-		}
-
-		.project-content h3 {
-			font-size: 1.1rem;
-		}
-
-		.project-content .description {
-			font-size: 0.9rem;
-		}
-
-		.project-image {
-			height: 160px;
-		}
-
-		.skill-tag {
-			font-size: 0.75rem;
-			padding: 0.2rem 0.6rem;
-		}
-
-		.link-button {
-			font-size: 0.8rem;
-			padding: 0.4rem 0.8rem;
-		}
+		main { padding: 0 20px; }
+		.page-hero { padding: 48px 0 32px; }
+		.page-hero h1 { font-size: 32px; }
+		.project-row { grid-template-columns: 1fr; gap: 8px; padding: 28px 0; }
+		.project-index { font-size: 12px; }
 	}
 </style>

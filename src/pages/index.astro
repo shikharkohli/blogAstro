@@ -3,6 +3,12 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+
+const posts = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 4);
 ---
 
 <!doctype html>
@@ -13,259 +19,246 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	<body>
 		<Header />
 		<main id="main">
-			<!-- Hero Section -->
-			<section class="hero-section">
-				<div class="hero-content">
-					<div class="profile-container">
-						<div class="profile-photo-wrapper">
-							<div class="profile-photo-placeholder">S K</div>
-						</div>
-					</div>
-					<div class="intro-content">
-						<h1>Hello! I'm Shikhar K</h1>
-						<p>Welcome to <strong>Vibes and Variance</strong>, a space for exploring the intersection of math, programming, product thinking, psychology, and game theory. I write about ideas that fascinate me and hope they might fascinate you too.</p>
-						<a href="/blog" class="cta-button">Explore the Blog →</a>
-					</div>
+			<section class="hero">
+				<div class="eyebrow">Vibes and Variance</div>
+				<h1>Quiet writing on math, product, and the systems behind how we think.</h1>
+				<p>I'm Shikhar — I write essays about the ideas that keep me up at night: abstract patterns, strategic behavior, the craft of building products, and the uncomfortable edges of data.</p>
+				<div class="hero-meta">
+					<a href="/blog" class="cta">Read the writing →</a>
+					<span class="dot" aria-hidden="true"></span>
+					<a href="/about" class="meta-link">About</a>
 				</div>
 			</section>
 
-			<!-- Interests Section -->
-			<section class="interests-section">
-				<h2>What Captures My Curiosity</h2>
-				<div class="interests-grid">
-					<article class="interest-card">
+			<section>
+				<header class="section-head">
+					<h2>Recent writing</h2>
+					<a href="/blog" class="see-all">All posts →</a>
+				</header>
+				<div class="post-list">
+					{posts.map((post) => (
+						<a class="post-row" href={`/blog/${post.id}/`}>
+							<div class="post-date"><FormattedDate date={post.data.pubDate} /></div>
+							<div>
+								<h3 class="post-title">{post.data.title}</h3>
+								{post.data.description && <p class="post-desc">{post.data.description}</p>}
+							</div>
+							<div class="post-read">Read →</div>
+						</a>
+					))}
+				</div>
+			</section>
+
+			<section>
+				<header class="section-head">
+					<h2>What captures my curiosity</h2>
+				</header>
+				<div class="note-grid">
+					<article class="note-card">
+						<div class="date">Field 01</div>
 						<h3>Mathematics</h3>
-						<p>Exploring abstract patterns, logic, and the elegant structures underlying reality.</p>
+						<p>Abstract patterns, logic, and the elegant structures underlying reality.</p>
 					</article>
-					<article class="interest-card">
+					<article class="note-card">
+						<div class="date">Field 02</div>
 						<h3>Programming</h3>
-						<p>Building tools and systems, problem-solving through code, and software design.</p>
+						<p>Building tools, problem-solving through code, and software design.</p>
 					</article>
-					<article class="interest-card">
-						<h3>Product Management</h3>
-						<p>Creating meaningful products, understanding user needs, and business strategy.</p>
+					<article class="note-card">
+						<div class="date">Field 03</div>
+						<h3>Product</h3>
+						<p>Creating meaningful products, user needs, and business strategy.</p>
 					</article>
-					<article class="interest-card">
+					<article class="note-card">
+						<div class="date">Field 04</div>
 						<h3>Game Theory</h3>
 						<p>Strategic interactions, cooperation, competition, and rational choice.</p>
 					</article>
 				</div>
 			</section>
-
-			<!-- Blog Expectations Section -->
-			<section class="blog-expectations-section">
-				<h2>What You'll Find Here</h2>
-				<p>This blog features personal essays and thoughts on the topics above. Rather than quick takes, you'll find deeper explorations of ideas that I'm working through. Topics range from technical deep-dives and product case studies to broader thoughts on human behavior and strategic thinking.</p>
-				<p>I aim for thoughtful, nuanced writing that respects your time and intelligence. Whether you're here for a specific topic or just browsing, I hope you find something that sparks your curiosity.</p>
-			</section>
-
-
 		</main>
 		<Footer />
 	</body>
 </html>
 
 <style>
-	/* Hero Section */
-	.hero-section {
-		margin-bottom: 4rem;
+	main {
+		max-width: 1100px;
+		margin: 0 auto;
+		padding: 0 32px;
 	}
 
-	.hero-content {
-		display: flex;
-		gap: 2rem;
-		align-items: center;
+	/* --- hero --- */
+	.hero {
+		padding: 96px 0 80px;
+		max-width: 720px;
 	}
-
-	.profile-container {
-		flex-shrink: 0;
+	.eyebrow {
+		font-size: 12px;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		font-weight: 500;
+		color: var(--fg-muted);
+		margin-bottom: 16px;
 	}
-
-	.profile-photo-wrapper {
-		animation: float 3s ease-in-out infinite;
-	}
-
-	.profile-photo-placeholder {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 200px;
-		height: 200px;
-		border-radius: 50%;
-		background: linear-gradient(135deg, var(--accent), rgba(35, 55, 255, 0.7));
-		color: white;
-		font-size: 3rem;
-		font-weight: 700;
-		letter-spacing: 0.5em;
-		box-shadow: 0 10px 30px rgba(35, 55, 255, 0.2);
-	}
-
-	.intro-content h1 {
-		margin-top: 0;
-		font-size: 2.5rem;
-	}
-
-	.intro-content p {
-		line-height: 1.7;
-		font-size: 1.1rem;
-	}
-
-	/* Interests Section */
-	.interests-section {
-		margin-bottom: 4rem;
-	}
-
-	.interests-section h2 {
-		margin-bottom: 2rem;
-	}
-
-	.interests-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 1.5rem;
-		margin-bottom: 2rem;
-	}
-
-	.interest-card {
-		padding: 1.5rem;
-		border-radius: 8px;
-		background: rgba(35, 55, 255, 0.05);
-		border: 1px solid rgba(35, 55, 255, 0.1);
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
-	}
-
-	.interest-card:hover {
-		transform: translateY(-4px);
-		box-shadow: 0 8px 20px rgba(35, 55, 255, 0.15);
-	}
-
-	.interest-card h3 {
-		margin-top: 0;
-		margin-bottom: 0.5rem;
-		color: var(--accent);
-		font-size: 1.25rem;
-	}
-
-	.interest-card p {
-		margin: 0;
-		font-size: 0.95rem;
-		color: var(--text-color);
-		line-height: 1.6;
-	}
-
-	/* Blog Expectations Section */
-	.blog-expectations-section {
-		margin-bottom: 3rem;
-	}
-
-	.blog-expectations-section p {
-		line-height: 1.8;
-		margin-bottom: 1rem;
-	}
-
-	/* Call-to-Action */
-	.cta-button {
-		margin-top: 1.5rem;
-		display: inline-block;
-		padding: 0.75rem 1.5rem;
-		background: var(--accent);
-		color: white;
-		text-decoration: none;
-		border-radius: 6px;
+	.hero h1 {
+		font-size: 56px;
+		line-height: 1.1;
+		letter-spacing: -0.025em;
 		font-weight: 600;
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		color: var(--fg-strong);
+		margin: 0 0 24px;
+		text-wrap: balance;
+	}
+	.hero p {
+		font-size: 19px;
+		line-height: 1.6;
+		color: var(--fg-muted);
+		margin: 0 0 28px;
+		max-width: 60ch;
+	}
+	.hero-meta {
+		display: flex;
+		gap: 16px;
+		align-items: center;
+		font-size: 14px;
+		color: var(--fg-muted);
+	}
+	.hero-meta .dot {
+		width: 3px;
+		height: 3px;
+		border-radius: 50%;
+		background: var(--border-strong);
+	}
+	.cta {
+		color: var(--fg-strong);
+		font-weight: 500;
+		border-bottom: 1px solid var(--accent);
+		padding-bottom: 2px;
+		text-decoration: none;
+	}
+	.cta:hover { color: var(--accent-fg); }
+	.meta-link { color: var(--fg-muted); text-decoration: none; }
+	.meta-link:hover { color: var(--fg-strong); }
+
+	/* --- section head --- */
+	.section-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		padding: 40px 0 24px;
+		border-top: 1px solid var(--border-subtle);
+	}
+	.section-head h2 {
+		font-size: 22px;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		color: var(--fg-strong);
+		margin: 0;
+	}
+	.see-all {
+		font-size: 13px;
+		color: var(--fg-muted);
+		text-decoration: none;
+	}
+	.see-all:hover { color: var(--accent-fg); }
+
+	/* --- post list --- */
+	.post-list { display: flex; flex-direction: column; }
+	.post-row {
+		display: grid;
+		grid-template-columns: 110px 1fr 80px;
+		gap: 24px;
+		align-items: baseline;
+		padding: 20px 12px;
+		border-bottom: 1px solid var(--border-subtle);
+		transition: background 150ms var(--ease-out);
+		margin: 0 -12px;
+		border-radius: 4px;
+		text-decoration: none;
+		color: inherit;
+	}
+	.post-row:hover { background: var(--bg-sunken); text-decoration: none; }
+	.post-date {
+		font-size: 13px;
+		font-family: var(--font-mono);
+		color: var(--fg-muted);
+		white-space: nowrap;
+	}
+	.post-title {
+		font-size: 17px;
+		font-weight: 500;
+		color: var(--fg-strong);
+		letter-spacing: -0.005em;
+		margin: 0 0 4px;
+	}
+	.post-desc {
+		font-size: 14px;
+		color: var(--fg-muted);
+		line-height: 1.55;
+		margin: 0;
+	}
+	.post-read {
+		font-size: 12px;
+		color: var(--fg-subtle);
+		text-align: right;
+		font-variant-numeric: tabular-nums;
 	}
 
-	.cta-button:hover {
-		transform: scale(1.05);
-		box-shadow: 0 6px 20px rgba(35, 55, 255, 0.3);
+	/* --- note grid --- */
+	.note-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 14px;
+	}
+	.note-card {
+		background: var(--bg-raised);
+		border: 1px solid var(--border);
+		border-radius: 6px;
+		padding: 18px;
+		transition: transform 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+	}
+	.note-card:hover {
+		transform: translateY(-1px);
+		box-shadow: var(--shadow-md);
+	}
+	.note-card .date {
+		font-size: 11px;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--fg-muted);
+		font-weight: 500;
+		margin-bottom: 10px;
+		font-family: var(--font-mono);
+	}
+	.note-card h3 {
+		font-size: 15px;
+		font-weight: 600;
+		color: var(--fg-strong);
+		margin: 0 0 6px;
+		letter-spacing: -0.005em;
+	}
+	.note-card p {
+		font-size: 13px;
+		color: var(--fg-muted);
+		margin: 0;
+		line-height: 1.55;
 	}
 
-	/* Animation */
-	@keyframes float {
-		0%, 100% {
-			transform: translateY(0px);
-		}
-		50% {
-			transform: translateY(-20px);
-		}
+	@media (max-width: 900px) {
+		.note-grid { grid-template-columns: 1fr 1fr; }
 	}
 
-	/* Dark Mode Adjustments */
-	html[data-theme='dark'] .profile-photo-placeholder {
-		background: linear-gradient(135deg, #46e856, rgba(70, 232, 86, 0.7));
-		box-shadow: 0 10px 30px rgba(70, 232, 86, 0.2);
-	}
-
-	html[data-theme='dark'] .interest-card {
-		background: rgba(70, 232, 86, 0.05);
-		border-color: rgba(70, 232, 86, 0.1);
-	}
-
-	html[data-theme='dark'] .interest-card:hover {
-		box-shadow: 0 8px 20px rgba(70, 232, 86, 0.15);
-	}
-
-	html[data-theme='dark'] .interest-card h3 {
-		color: #46e856;
-	}
-
-	html[data-theme='dark'] .blog-expectations-section {
-		border-color: rgba(70, 232, 86, 0.1);
-	}
-
-	html[data-theme='dark'] .cta-button {
-		background: #46e856;
-		color: #1a1a1a;
-	}
-
-	html[data-theme='dark'] .cta-button:hover {
-		box-shadow: 0 6px 20px rgba(70, 232, 86, 0.3);
-	}
-
-	/* Responsive Design */
 	@media (max-width: 720px) {
-		.hero-content {
-			flex-direction: column;
-			align-items: center;
-			text-align: center;
-			gap: 1.5rem;
-		}
-
-		.profile-photo-placeholder {
-			width: 150px;
-			height: 150px;
-			font-size: 2rem;
-		}
-
-		.intro-content h1 {
-			font-size: 1.75rem;
-		}
-
-		.intro-content p {
-			font-size: 1rem;
-		}
-
-		.interests-grid {
+		main { padding: 0 20px; }
+		.hero { padding: 56px 0 48px; }
+		.hero h1 { font-size: 36px; }
+		.hero p { font-size: 17px; }
+		.post-row {
 			grid-template-columns: 1fr;
-			gap: 1rem;
+			gap: 6px;
 		}
-
-		.interest-card {
-			padding: 1.25rem;
-		}
-
-		.interest-card h3 {
-			font-size: 1.1rem;
-		}
-
-		.interest-card p {
-			font-size: 0.9rem;
-		}
-
-		.interests-section,
-		.blog-expectations-section {
-			margin-bottom: 2rem;
-		}
+		.post-read { display: none; }
+		.note-grid { grid-template-columns: 1fr; }
 	}
 </style>

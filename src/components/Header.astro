@@ -2,38 +2,31 @@
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
 import ThemeToggle from './ThemeToggle.astro';
-import TodoBanner from './TodoBanner.astro';
-import { Icon } from 'astro-icon/components';
 ---
 
-<TodoBanner />
-<header>
+<header class="site-header">
 	<a href="#main" class="skip-link">Skip to main content</a>
-	<nav>
-		<div class="site-title"><a href="/">{SITE_TITLE}</a></div>
-		
-		<div class="nav-container">
-			<div class="internal-links" id="nav-menu">
-				<HeaderLink href="/">Home</HeaderLink>
-				<HeaderLink href="/blog">Blog</HeaderLink>
-				<HeaderLink href="/portfolio">Portfolio</HeaderLink>
-				<HeaderLink href="/about">About</HeaderLink>
-				<div class="mobile-theme-toggle">
-					<ThemeToggle />
-				</div>
-			</div>
-			<div class="desktop-theme-toggle">
-				<ThemeToggle />
-			</div>
-		</div>
+	<div class="header-inner">
+		<a href="/" class="brand">{SITE_TITLE}</a>
 
-		<button class="hamburger" id="hamburger-menu" aria-label="Open navigation menu" aria-controls="nav-menu" aria-expanded="false">
-			<span></span>
-			<span></span>
-			<span></span>
-		</button>
-	</nav>
+		<nav class="main-nav" id="nav-menu" aria-label="Primary">
+			<HeaderLink href="/">Home</HeaderLink>
+			<HeaderLink href="/blog">Writing</HeaderLink>
+			<HeaderLink href="/portfolio">Work</HeaderLink>
+			<HeaderLink href="/about">About</HeaderLink>
+		</nav>
+
+		<div class="header-actions">
+			<ThemeToggle />
+			<button class="hamburger" id="hamburger-menu" aria-label="Open navigation menu" aria-controls="nav-menu" aria-expanded="false">
+				<span></span>
+				<span></span>
+				<span></span>
+			</button>
+		</div>
+	</div>
 </header>
+
 <script is:inline>
 	(function () {
 		const hamburger = document.getElementById('hamburger-menu');
@@ -45,13 +38,11 @@ import { Icon } from 'astro-icon/components';
 			hamburger.setAttribute('aria-expanded', 'true');
 			navMenu.classList.add('open');
 		}
-
 		function closeMenu() {
 			hamburger.classList.remove('open');
 			hamburger.setAttribute('aria-expanded', 'false');
 			navMenu.classList.remove('open');
 		}
-
 		function toggleMenu() {
 			if (navMenu.classList.contains('open')) closeMenu(); else openMenu();
 		}
@@ -61,7 +52,6 @@ import { Icon } from 'astro-icon/components';
 			toggleMenu();
 		});
 
-		// Close when a navigation link is clicked
 		navMenu.addEventListener('click', (e) => {
 			const target = e.target;
 			if (target && (target.tagName === 'A' || target.closest('a'))) {
@@ -69,7 +59,6 @@ import { Icon } from 'astro-icon/components';
 			}
 		});
 
-		// Close on outside click
 		document.addEventListener('click', (e) => {
 			const target = e.target;
 			if (!navMenu.contains(target) && !hamburger.contains(target)) {
@@ -77,65 +66,70 @@ import { Icon } from 'astro-icon/components';
 			}
 		});
 
-		// Close on Escape key
 		document.addEventListener('keydown', (e) => {
 			if (e.key === 'Escape') closeMenu();
 		});
 	})();
 </script>
+
 <style>
-	header {
-		margin: 0;
-		padding: 0 1em;
-		background: var(--header-bg);
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
-		transition: background-color 0.3s ease;
-	}
-	.site-title {
-		margin: 0;
-		font-size: 1em;
-		font-weight: 700;
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		background: var(--bg);
+		border-bottom: 1px solid var(--border-subtle);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
 	}
 
-	.site-title a,
-	.site-title a.active {
-		text-decoration: none;
-	}
-	nav {
+	.header-inner {
+		max-width: 1100px;
+		margin: 0 auto;
+		padding: 20px 32px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		gap: 24px;
 	}
-	nav a {
-		padding: 1em 0.5em;
-		color: var(--nav-text);
-		border-bottom: 4px solid transparent;
+
+	.brand {
+		font-family: var(--font-display);
+		font-size: 17px;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		color: var(--fg-strong);
 		text-decoration: none;
-		transition: color 0.3s ease;
 	}
-	nav a.active {
+	.brand:hover { color: var(--accent-hover); text-decoration: none; }
+
+	.main-nav {
+		display: flex;
+		gap: 28px;
+		align-items: center;
+	}
+	.main-nav :global(a) {
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--fg-muted);
 		text-decoration: none;
+		transition: color var(--dur-fast) var(--ease-out);
+		padding: 4px 0;
+		border-bottom: 1px solid transparent;
+	}
+	.main-nav :global(a:hover),
+	.main-nav :global(a.active) {
+		color: var(--fg-strong);
+		text-decoration: none;
+	}
+	.main-nav :global(a.active) {
 		border-bottom-color: var(--accent);
 	}
-	.nav-container {
+
+	.header-actions {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
-	}
-
-	/* Default (desktop) navigation layout */
-	.internal-links {
-		display: flex;
-		gap: 0.25rem;
-		align-items: center;
-	}
-
-	.mobile-theme-toggle {
-		display: none;
-	}
-
-	.desktop-theme-toggle {
-		display: block;
+		gap: 12px;
 	}
 
 	.hamburger {
@@ -143,93 +137,69 @@ import { Icon } from 'astro-icon/components';
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		width: 40px;
-		height: 40px;
-		background: none;
-		border: none;
+		width: 36px;
+		height: 36px;
+		background: transparent;
+		border: 0;
 		cursor: pointer;
 		padding: 0;
-		margin-left: 1em;
-		z-index: 20;
 	}
 	.hamburger span {
 		display: block;
-		width: 28px;
-		height: 3px;
-		margin: 4px 0;
-		background: var(--nav-text);
-		border-radius: 2px;
-		transition: all 0.25s ease;
+		width: 20px;
+		height: 1.5px;
+		margin: 2.5px 0;
+		background: var(--fg-muted);
+		border-radius: 1px;
+		transition: all var(--dur-fast) var(--ease-out);
 	}
-	.hamburger.open span:nth-child(1) {
-		transform: translateY(7px) rotate(45deg);
-	}
-	.hamburger.open span:nth-child(2) {
-		opacity: 0;
-		transform: scaleX(0);
-	}
-	.hamburger.open span:nth-child(3) {
-		transform: translateY(-7px) rotate(-45deg);
-	}
-	@media (max-width: 900px) {
-		.hamburger {
-			display: flex;
-		}
-		.nav-container {
-			position: static;
-			gap: 1rem;
-		}
-		.desktop-theme-toggle {
-			display: none;
-		}
-		.mobile-theme-toggle {
-			display: block;
-			padding: 1em 2em;
-			border-bottom: 1px solid var(--border-color);
-		}
-		.internal-links {
+	.hamburger.open span:nth-child(1) { transform: translateY(4.5px) rotate(45deg); }
+	.hamburger.open span:nth-child(2) { opacity: 0; }
+	.hamburger.open span:nth-child(3) { transform: translateY(-4.5px) rotate(-45deg); }
+
+	@media (max-width: 720px) {
+		.header-inner { padding: 16px 20px; }
+
+		.hamburger { display: flex; }
+
+		.main-nav {
 			position: absolute;
-			top: 60px;
+			top: 100%;
 			left: 0;
 			right: 0;
-			background: var(--header-bg);
 			flex-direction: column;
 			align-items: flex-start;
 			gap: 0;
+			background: var(--bg-raised);
+			border-bottom: 1px solid var(--border-subtle);
 			display: none;
-			z-index: 10;
-			box-shadow: 0 2px 8px rgba(var(--black), 10%);
+			box-shadow: var(--shadow-md);
 		}
-		.internal-links.open {
-			display: flex;
-		}
-		.internal-links a {
+		.main-nav.open { display: flex; }
+		.main-nav :global(a) {
 			width: 100%;
-			padding: 1em 2em;
-			border-bottom: 1px solid var(--border-color);
+			padding: 14px 20px;
+			border-bottom: 1px solid var(--border-subtle);
+			border-bottom-color: var(--border-subtle);
+		}
+		.main-nav :global(a.active) {
+			border-bottom-color: var(--border-subtle);
+			color: var(--accent-fg);
 		}
 	}
-	@media (max-width: 720px) {
-		.internal-links {
-			top: 50px;
-		}
-	}
-	
-	/* Skip link styles */
+
+	/* Skip link */
 	.skip-link {
 		position: absolute;
 		left: -9999px;
 		z-index: 999;
-		padding: 1em;
-		background-color: var(--accent);
-		color: white;
+		padding: 12px 16px;
+		background: var(--accent);
+		color: var(--fg-on-accent);
 		text-decoration: none;
-		font-weight: 600;
-		border-radius: 0 0 4px 0;
+		font-weight: 500;
+		font-size: 14px;
+		border-radius: 0 0 var(--radius-sm) 0;
 	}
-	
-	.skip-link:focus {
-		left: 0;
-		top: 0;
-	}
+	.skip-link:focus { left: 0; top: 0; }
 </style>
